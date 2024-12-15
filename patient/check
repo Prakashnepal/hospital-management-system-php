@@ -1,0 +1,51 @@
+<?php
+include("include/config.php");
+session_start();
+error_reporting(0);
+
+if (isset($_POST['submit'])) {
+  $phoneNumber = $_POST['phoneNumber']; // Changed from userEmail to phoneNumber
+  $password = md5($_POST['password']);
+  $select = mysqli_query($con, "SELECT * FROM users WHERE phone_number='$phoneNumber' AND password='$password'");
+
+  if (mysqli_num_rows($select) > 0) {
+    $row = mysqli_fetch_assoc($select);
+    $_SESSION['user_id'] = $row['id'];
+
+    // Check the usertype and redirect accordingly
+    if ($row['usertype'] === 'admin') {
+      header('location:admin_dashboard.php');
+    } elseif ($row['usertype'] === 'patient') {
+      header('location:user_dashboard.php');
+    } else {
+      header('location:dashboard.php'); // Default redirect for other user types
+    }
+  } else {
+    $message[] = 'Incorrect Phone Number Or Password'; // Updated error message
+  }
+}
+
+
+
+
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nepal Hospital - Patient Dashboard</title>
+  <link rel="stylesheet" href="assets/css/main.min.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Welcome to Your Dashboard</h1>
+    <p>Your Phone Number: <?= htmlspecialchars($phoneNumber); ?></p>
+    <!-- Add more dashboard functionality here -->
+<!-- <a href="logout.php" class="btn btn-danger">Logout</a> <!-- Logout link -->
+</div>
+</body>
+
+</html> --> -->
